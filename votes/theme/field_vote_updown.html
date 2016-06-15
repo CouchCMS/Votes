@@ -1,0 +1,29 @@
+<cms:if sum lt '0' >
+    <cms:set sum_str="&minus;<cms:number_format "<cms:mul sum '-1' />" decimal_precision='0' thousands_separator=',' />" />
+<cms:else/>
+    <cms:set sum_str="<cms:number_format sum decimal_precision='0' thousands_separator=',' />" />
+</cms:if>
+
+<div class="vote-wrap">
+    <!--<button class="vote-reset tt" title="Reset Votes" type="button"><cms:show_icon 'x' /></button>-->
+    <h4 class="vote-title">
+        <cms:show sum_str /> point<cms:if sum_plural >s</cms:if>
+        from <cms:number_format count decimal_precision='0' thousands_separator=',' /> vote<cms:if count_plural >s</cms:if>
+    </h4>
+
+    <div class="vote-row">
+        <div class="vote-legend">
+            <cms:show_icon 'thumb-up' />
+        </div>
+        <div class="vote-meter"><span class="vote-meter-pct"><cms:show percent_up />%</span><div class="vote-meter-bar vote-meter-bar-positive" style="width:<cms:show percent_up />%;"></div></div>
+        <span class="vote-total"><cms:number_format count_up decimal_precision='0' thousands_separator=',' /></span>
+    </div>
+
+    <div class="vote-row">
+        <div class="vote-legend">
+            <cms:show_icon 'thumb-down' />
+        </div>
+        <div class="vote-meter"><span class="vote-meter-pct"><cms:show percent_down />%</span><div class="vote-meter-bar vote-meter-bar-negative" style="width:<cms:show percent_down />%;"></div></div>
+        <span class="vote-total"><cms:number_format count_down decimal_precision='0' thousands_separator=',' /></span>
+    </div>
+</div>

@@ -63,12 +63,15 @@
         }
 
         // Output to admin panel
-        function _render( $input_name, $input_id, $extra='' ){
+        function _render( $input_name, $input_id, $extra='', $dynamic_insertion=0 ){
             global $FUNCS, $CTX;
 
-            // show voting stats to admin
-            $vars = $this->_get_votes_calc();
-            $html = $vars['sum'] . " points from ".$vars['count']." votes (".$vars['count_up']." Up, ".$vars['count_down']." Down)";
+            if( !defined('VOTES_URL') ){
+                define( 'VOTES_URL', K_ADMIN_URL . 'addons/votes/' );
+                $FUNCS->load_css( VOTES_URL . 'votes.css' );
+            }
+
+            $html = $FUNCS->render( 'field_'.$this->k_type, $this, $input_name, $input_id, $extra, $dynamic_insertion );
 
             return $html;
         }
@@ -121,6 +124,10 @@
 
         function is_empty(){
             return !strlen( $this->data );
+        }
+
+        function _prep_cached(){
+            $this->calc_results = null;
         }
 
         // Save to database.
@@ -346,10 +353,44 @@
             }
         }
 
+        // renderable theme functions
+        static function register_renderables(){
+            global $FUNCS;
+
+            $FUNCS->register_render( 'field_vote_updown', array('template_path'=>K_COUCH_DIR.'addons/votes/theme/', 'template_ctx_setter'=>array('KVoteUpDown', '_render_votes')) );
+        }
+
+        static function _render_votes( $f, $input_name, $input_id, $extra, $dynamic_insertion ){
+            global $CTX;
+
+            KField::_set_common_vars( $f->k_type, $input_name, $input_id, $extra, $dynamic_insertion );
+
+            $vars = $f->_get_votes_calc();
+
+            $CTX->set_all( $vars );
+
+            $CTX->set( 'sum_plural', $vars['sum'] != 1 && $vars['sum'] != -1 ? 1 : 0 );
+            $CTX->set( 'count_plural', $vars['count'] != 1 ? 1 : 0 );
+        }
+
     } /* end KVoteUpDown */
 
     // UDF for 'vote_stars' editable region
     class KVoteStars extends KVoteUpDown{
+
+        // Output to admin panel
+        function _render( $input_name, $input_id, $extra='', $dynamic_insertion=0 ){
+            global $FUNCS, $CTX;
+
+            if( !defined('VOTES_URL') ){
+                define( 'VOTES_URL', K_ADMIN_URL . 'addons/votes/' );
+                $FUNCS->load_css( VOTES_URL . 'votes.css' );
+            }
+
+            $html = $FUNCS->render( 'field_'.$this->k_type, $this, $input_name, $input_id, $extra, $dynamic_insertion );
+
+            return $html;
+        }
 
         function handle_params( $params ){
             global $FUNCS, $AUTH;
@@ -365,17 +406,6 @@
 
             return $attr;
 
-        }
-
-        // Output to admin panel
-        function _render( $input_name, $input_id, $extra='' ){
-            global $FUNCS, $CTX;
-
-            // show voting stats to admin
-            $vars = $this->_get_votes_calc();
-            $html = $vars['avg'] . " stars from ".$vars['count']." votes";
-
-            return $html;
         }
 
         // Handle posted data
@@ -484,6 +514,31 @@
             return $this->calc_results;
 
         }
+
+        // renderable theme functions
+        static function register_renderables(){
+            global $FUNCS;
+
+            $FUNCS->register_render( 'field_vote_stars', array('template_path'=>K_COUCH_DIR.'addons/votes/theme/', 'template_ctx_setter'=>array('KVoteUpStars', '_render_votes')) );
+        }
+
+        static function _render_votes( $f, $input_name, $input_id, $extra, $dynamic_insertion ){
+            global $CTX;
+
+            KField::_set_common_vars( $f->k_type, $input_name, $input_id, $extra, $dynamic_insertion );
+
+            $vars = $f->_get_votes_calc();
+
+            $sum = $vars['count_1'] + $vars['count_2'] * 2 + $vars['count_3'] * 3 + $vars['count_4'] * 4 + $vars['count_5'] * 5;
+
+            $CTX->set_all( $vars );
+
+            $CTX->set( 'sum', $sum );
+            $CTX->set( 'sum_plural', $sum != 1 ? 1 : 0 );
+
+            $CTX->set( 'count_plural', $vars['count'] != 1 ? 1 : 0 );
+        }
+
     } /* end KVoteStars */
 
 
@@ -491,12 +546,15 @@
     class KVotePoll extends KVoteUpDown{
 
         // Output to admin panel
-        function _render( $input_name, $input_id, $extra='' ){
+        function _render( $input_name, $input_id, $extra='', $dynamic_insertion=0 ){
             global $FUNCS, $CTX;
 
-            // show voting stats to admin
-            $vars = $this->_get_votes_calc();
-            $html = $vars['count'] . " votes";
+            if( !defined('VOTES_URL') ){
+                define( 'VOTES_URL', K_ADMIN_URL . 'addons/votes/' );
+                $FUNCS->load_css( VOTES_URL . 'votes.css' );
+            }
+
+            $html = $FUNCS->render( 'field_'.$this->k_type, $this, $input_name, $input_id, $extra, $dynamic_insertion );
 
             return $html;
         }
@@ -607,6 +665,26 @@
             return $this->calc_results;
 
         }
+
+        // renderable theme functions
+        static function register_renderables(){
+            global $FUNCS;
+
+            $FUNCS->register_render( 'field_vote_poll', array('template_path'=>K_COUCH_DIR.'addons/votes/theme/', 'template_ctx_setter'=>array('KVoteUpPoll', '_render_votes')) );
+        }
+
+        static function _render_votes( $f, $input_name, $input_id, $extra, $dynamic_insertion ){
+            global $CTX;
+
+            KField::_set_common_vars( $f->k_type, $input_name, $input_id, $extra, $dynamic_insertion );
+
+            $vars = $f->_get_votes_calc();
+
+            $CTX->set_all( $vars );
+
+            $CTX->set( 'count_plural', $vars['count'] != 1 ? 1 : 0 );
+        }
+
     }  /* end KVotePoll */
 
 
@@ -614,3 +692,7 @@
     $FUNCS->register_udf( 'vote_stars', 'KVoteStars', 0/*repeatable*/ );
     $FUNCS->register_udf( 'vote_poll', 'KVotePoll', 0/*repeatable*/ );
     $FUNCS->register_tag( 'show_votes', array('KVoteUpDown', 'show_handler'), 1, 0 ); // The helper tag that shows the variables via CTX
+
+    $FUNCS->add_event_listener( 'register_renderables', array('KVoteUpDown',  'register_renderables') );
+    $FUNCS->add_event_listener( 'register_renderables', array('KVoteUpStars', 'register_renderables') );
+    $FUNCS->add_event_listener( 'register_renderables', array('KVoteUpPoll',  'register_renderables') );

@@ -378,20 +378,6 @@
     // UDF for 'vote_stars' editable region
     class KVoteStars extends KVoteUpDown{
 
-        // Output to admin panel
-        function _render( $input_name, $input_id, $extra='', $dynamic_insertion=0 ){
-            global $FUNCS, $CTX;
-
-            if( !defined('VOTES_URL') ){
-                define( 'VOTES_URL', K_ADMIN_URL . 'addons/votes/' );
-                $FUNCS->load_css( VOTES_URL . 'votes.css' );
-            }
-
-            $html = $FUNCS->render( 'field_'.$this->k_type, $this, $input_name, $input_id, $extra, $dynamic_insertion );
-
-            return $html;
-        }
-
         function handle_params( $params ){
             global $FUNCS, $AUTH;
             if( $AUTH->user->access_level < K_ACCESS_LEVEL_SUPER_ADMIN ) return;
@@ -519,7 +505,7 @@
         static function register_renderables(){
             global $FUNCS;
 
-            $FUNCS->register_render( 'field_vote_stars', array('template_path'=>K_COUCH_DIR.'addons/votes/theme/', 'template_ctx_setter'=>array('KVoteUpStars', '_render_votes')) );
+            $FUNCS->register_render( 'field_vote_stars', array('template_path'=>K_COUCH_DIR.'addons/votes/theme/', 'template_ctx_setter'=>array('KVoteStars', '_render_votes')) );
         }
 
         static function _render_votes( $f, $input_name, $input_id, $extra, $dynamic_insertion ){
@@ -544,20 +530,6 @@
 
     // UDF for 'vote_poll' editable region
     class KVotePoll extends KVoteUpDown{
-
-        // Output to admin panel
-        function _render( $input_name, $input_id, $extra='', $dynamic_insertion=0 ){
-            global $FUNCS, $CTX;
-
-            if( !defined('VOTES_URL') ){
-                define( 'VOTES_URL', K_ADMIN_URL . 'addons/votes/' );
-                $FUNCS->load_css( VOTES_URL . 'votes.css' );
-            }
-
-            $html = $FUNCS->render( 'field_'.$this->k_type, $this, $input_name, $input_id, $extra, $dynamic_insertion );
-
-            return $html;
-        }
 
         // Handle posted data
         function store_posted_changes( $post_val ){
@@ -670,7 +642,7 @@
         static function register_renderables(){
             global $FUNCS;
 
-            $FUNCS->register_render( 'field_vote_poll', array('template_path'=>K_COUCH_DIR.'addons/votes/theme/', 'template_ctx_setter'=>array('KVoteUpPoll', '_render_votes')) );
+            $FUNCS->register_render( 'field_vote_poll', array('template_path'=>K_COUCH_DIR.'addons/votes/theme/', 'template_ctx_setter'=>array('KVotePoll', '_render_votes')) );
         }
 
         static function _render_votes( $f, $input_name, $input_id, $extra, $dynamic_insertion ){
@@ -694,5 +666,5 @@
     $FUNCS->register_tag( 'show_votes', array('KVoteUpDown', 'show_handler'), 1, 0 ); // The helper tag that shows the variables via CTX
 
     $FUNCS->add_event_listener( 'register_renderables', array('KVoteUpDown',  'register_renderables') );
-    $FUNCS->add_event_listener( 'register_renderables', array('KVoteUpStars', 'register_renderables') );
-    $FUNCS->add_event_listener( 'register_renderables', array('KVoteUpPoll',  'register_renderables') );
+    $FUNCS->add_event_listener( 'register_renderables', array('KVoteStars', 'register_renderables') );
+    $FUNCS->add_event_listener( 'register_renderables', array('KVotePoll',  'register_renderables') );

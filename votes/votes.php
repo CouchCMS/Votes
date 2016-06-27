@@ -363,7 +363,7 @@
         static function _render_votes( $f, $input_name, $input_id, $extra, $dynamic_insertion ){
             global $CTX;
 
-            KField::_set_common_vars( $f->k_type, $input_name, $input_id, $extra, $dynamic_insertion );
+            KField::_set_common_vars( $f->k_type, $input_name, $input_id, $extra, $dynamic_insertion, $f->simple_mode );
 
             $vars = $f->_get_votes_calc();
 
@@ -511,7 +511,7 @@
         static function _render_votes( $f, $input_name, $input_id, $extra, $dynamic_insertion ){
             global $CTX;
 
-            KField::_set_common_vars( $f->k_type, $input_name, $input_id, $extra, $dynamic_insertion );
+            KField::_set_common_vars( $f->k_type, $input_name, $input_id, $extra, $dynamic_insertion, $f->simple_mode );
 
             $vars = $f->_get_votes_calc();
 
@@ -648,7 +648,7 @@
         static function _render_votes( $f, $input_name, $input_id, $extra, $dynamic_insertion ){
             global $CTX;
 
-            KField::_set_common_vars( $f->k_type, $input_name, $input_id, $extra, $dynamic_insertion );
+            KField::_set_common_vars( $f->k_type, $input_name, $input_id, $extra, $dynamic_insertion, $f->simple_mode );
 
             $vars = $f->_get_votes_calc();
 

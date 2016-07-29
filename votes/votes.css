@@ -36,3 +36,8 @@
     .vote-wrap{min-width:440px;}
     .panel-body>.field>.vote-wrap{min-width:408px;}
 }
+
+@media(max-width:500px){
+    .vote-wrap{min-width:320px;}
+    .panel-body>.field>.vote-wrap{min-width:288px;}
+}

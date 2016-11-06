@@ -47,11 +47,11 @@
         var $vote_value;
         var $config = null;
 
-        function KVoteUpDown( $row, &$page, &$siblings ){
+        function __construct( $row, &$page, &$siblings ){
             global $FUNCS;
 
             // call parent
-            parent::KUserDefinedField( $row, $page, $siblings );
+            parent::__construct( $row, $page, $siblings );
 
             // config
             if( defined('K_VOTE_WINDOW_MEMBER') && ($FUNCS->is_natural(K_VOTE_WINDOW_MEMBER) || K_VOTE_WINDOW_MEMBER=='-1') ){
@@ -322,8 +322,8 @@
 
         ////////////////////////////////////////////////////////////////////////
 
-        // Handles 'cms:show_vote_updown' tag
-        function show_handler( $params, $node ){
+        // Handles 'cms:show_votes' tag
+        static function show_handler( $params, $node ){
             global $FUNCS, $CTX, $DB;
             if( !count($node->children) ) return;
 
